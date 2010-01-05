@@ -1,3 +1,4 @@
+require 'cgi'
 module S3
 
   # Class responsible for generating signatures to requests.
