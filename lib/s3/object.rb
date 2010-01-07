@@ -108,6 +108,19 @@ module S3
       "#<#{self.class}:/#{name}/#{key}>"
     end
 
+    # Returns a temporary url to the object that expires on the timestamp given
+    # Defaults to one hour expire time
+    def temporary_url(expires_at=(Time.new.to_i+3600))
+
+      sig = S3::Signature.generate_temporary_url_signature(:bucket => self.bucket,
+                                                           :resource => path_prefix,
+                                                           :expires_on => expires_at,
+                                                           :secret_access_key => self.bucket.service.secret_access_key)
+
+
+      URI.escape("#{protocol}#{host}/#{path_prefix}#{key}&Signature=#{sig}&Expires=#{expires_at}")
+    end
+
     private
 
     attr_writer :last_modified, :etag, :size, :original_key, :bucket
